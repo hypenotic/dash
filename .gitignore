@@ -10,10 +10,8 @@ node_modules/
 wordpress/
 wordpress/*
 wp-config.php
-cms/wordpress/*
-cms/custom/upgrade
-cms/custom/plugins
-cms/custom/languages
+upgrade/
+languages/
 uploads/
 
 # Other - add project specific ignores below
