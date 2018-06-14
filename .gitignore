@@ -7,7 +7,9 @@ robots.txt
 node_modules/
 
 # WordPress - Install it yourself!
-
+wordpress/
+wordpress/*
+wp-config.php
 cms/wordpress/*
 cms/custom/upgrade
 cms/custom/plugins
