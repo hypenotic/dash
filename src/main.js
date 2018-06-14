@@ -1,18 +1,31 @@
+//Import
 import Vue from 'vue'
-import Vuex from 'vuex'
-import store from './store'
-import App from './app'
-import axios from 'axios'
+import App from './App.vue'
+import VueRouter from 'vue-router'
+import { routes } from './routes'
+import Buefy from 'buefy'
+import 'buefy/lib/buefy.css'
+import Footer from './components/Shared/Footer.vue'
+import { store } from './store/store.js'
 
-Vue.use(axios)
-Vue.use(Vuex)
+// Register global components 
+Vue.component('hype-footer', Footer) // Register globally
 
-Vue.config.productionTip = false
+// Use
+Vue.use(Buefy);
+Vue.use(VueRouter);
 
-/* eslint-disable no-new */
-var app = new Vue({
-    el: '#app',
-    //router,
-    store,
-    render: h => h(App)
-});
+const router = new VueRouter({
+	routes, // Have to pass an object where we setup the router. ES6 syntax (routes:routes)
+  mode: 'history', // Remove the hash
+  scrollBehavior (to, from, savedPosition) {
+    return { x: 0, y: 0 }
+  }
+})
+
+new Vue({
+  el: '#app',
+  router,
+  store,
+  render: h => h(App)
+})

@@ -1,55 +1,22 @@
 <template>
     <div>
-        <users></users>
-        <add-project></add-project>
-        <projects></projects>
+        <transition name="fade">
+            <router-view></router-view>
+        </transition>
     </div>
 </template>
 
 <script>
-
-    import Users from './views/users.vue'
-    import AddProject from './views/addproject.vue'
-    import Projects from './views/projects.vue'
-    //import Users from './components/users'
-    
-    export default {
-        components: {
-            Users,
-            Projects,
-            AddProject,
-            //Clients
-        },
-        data () {
-            return {
-                title: this.$store.state.moduleUser.name,
-                email: this.$store.state.moduleUser.email,
-                clients: this.$store.state.moduleUser.clients
-            }
-        },
-        methods: {
-            addUser () {
-                // Send an event upwards to be picked up by App
-                this.$dispatch('button-pressed')
-            }
-        },
-        head () {
-            return {
-                title: this.$nuxt.$store.state.moduleUser.name,
-                meta: [
-                    { hid: 'og:title', name: 'og:title', content: this.title },
-                    { hid: 'og:title', name: 'og:title', content: this.title },
-                    { hid: 'description', name: 'description', content: 'My custom description' }
-                ]
-            }
-        },
-        created() {
-
-        }
-    }
+export default {
+ 
+}
 </script>
 
-<style>
-
-
+<style scoped>
+.fade-enter-active, .fade-leave-active {
+    transition: opacity .2s
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+    opacity: 0
+}
 </style>
