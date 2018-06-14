@@ -1,0 +1,16 @@
+# Common
+
+.htaccess
+.DS_Store
+.sass-cache/
+robots.txt
+node_modules/
+
+# WordPress - Install it yourself!
+
+cms/wordpress/*
+cms/custom/upgrade
+cms/custom/plugins
+cms/custom/languages
+
+# Other - add project specific ignores below
