@@ -14,5 +14,6 @@ cms/wordpress/*
 cms/custom/upgrade
 cms/custom/plugins
 cms/custom/languages
+uploads/
 
 # Other - add project specific ignores below
