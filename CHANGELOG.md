@@ -6,6 +6,7 @@ See [Github Issues](https://github.com/hypenotic/dash/issues) for upcoming fixes
 ## 2018-06-15
 
 ### Added
+* Added [WP REST User](https://wordpress.org/plugins/wp-rest-user)
 * Added [JWT Authentication for WP REST API](https://en-ca.wordpress.org/plugins/jwt-authentication-for-wp-rest-api/) plugin
 * Hacked JWT Authentication for WP REST API to include `user_id` in `/public/class-jwt-auth-public.php`
 
