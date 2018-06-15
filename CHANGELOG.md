@@ -6,8 +6,12 @@ See [Github Issues](https://github.com/hypenotic/dash/issues) for upcoming fixes
 ## 2018-06-15
 
 ### Added
-* Added [Basic Auth](https://github.com/WP-API/Basic-Auth) plugin
+* Added [JWT Authentication for WP REST API](https://en-ca.wordpress.org/plugins/jwt-authentication-for-wp-rest-api/) plugin
 
+### Removed
+* [Basic Auth](https://github.com/WP-API/Basic-Auth)
+* JSON API plugin
+* JSON API User Plus
 
 ## 2018-06-14
 
