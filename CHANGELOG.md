@@ -3,6 +3,12 @@ All notable changes to this project will be documented in this file.
 
 See [Github Issues](https://github.com/hypenotic/dash/issues) for upcoming fixes and issues.
 
+## 2018-06-15
+
+### Added
+* Added [Basic Auth](https://github.com/WP-API/Basic-Auth) plugin
+
+
 ## 2018-06-14
 
 ### Added
