@@ -20,30 +20,44 @@
 
 add_filter( 'rwmb_meta_boxes', 'pc_register_default' );
 function pc_register_default( $meta_boxes ) {
-    
-    // For projects
-    
-    $prefix = 'projects_';
-    
+    $prefix = '_page_';
+    // ALL PAGES
     $meta_boxes[] = array(
-
-        'title'      => __( 'Client', 'textdomain' ),
-        'post_types' => array( 'project'),
+        'title'      => __( 'Site Information', 'textdomain' ),
+        'post_types' => array( 'page'),
         'fields' => array(
             array(
-                'name'    => 'Client',
+                'name'    => 'Site Title',
                 'id'      => $prefix . 'site_title',
-                'type'    => 'taxonomy_advanced',
-
-                // Taxonomy slug.
-                'taxonomy'   => 'category',
-
-                // How to show taxonomy.
-                'field_type' => 'select_advanced',
+                'type'    => 'text',
             ),
+            array(
+                'name'    => 'Site Description',
+                'id'      => $prefix . 'site_description',
+                'type'    => 'text',
+            )
         ),
     );
-    
+    $meta_boxes[] = array(
+        'title'      => __( 'Repeating Sections', 'textdomain' ),
+        'post_types' => array( 'page'),
+        'fields' => array(
+            array(
+                'name'    => 'Body Text',
+                'id'      => $prefix . 'body_text',
+                'type'    => 'wysiwyg',
+
+                // Set the 'raw' parameter to TRUE to prevent data being passed through wpautop() on save
+                'raw'     => false,
+
+                // Editor settings, see https://codex.wordpress.org/Function_Reference/wp_editor
+                'options' => array(
+                    'textarea_rows' => 4,
+                    'teeny'         => true,
+                ),
+            )
+        ),
+    );
     return $meta_boxes;
 }
 

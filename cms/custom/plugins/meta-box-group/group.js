@@ -1,12 +1,13 @@
-/* global jQuery, _ */
-( function( $, _ ) {
+/* global jQuery, _, google */
+( function( $, _, document ) {
 	'use strict';
 
 	var $wrapper,
 		group = {
 			toggle: {}, // Toggle module for handling collapsible/expandable groups.
 			clone: {}   // Clone module for handling clone groups.
-		};
+		},
+		inputSelectors = 'input[class*="rwmb"], textarea[class*="rwmb"], select[class*="rwmb"], button[class*="rwmb"]';
 
 	/**
 	 * Handles a click on either the group title or the group collapsible/expandable icon.
@@ -22,6 +23,9 @@
 			state = $group.hasClass( 'rwmb-group-collapsed' ) ? 'expanded' : 'collapsed';
 
 		group.toggle.updateState( $group, state );
+
+		// Refresh maps to make them visible.
+		$( window ).trigger( 'rwmb_map_refresh' );
 	};
 
 	/**
@@ -37,6 +41,8 @@
 		} else {
 			state = $input.val();
 		}
+		// Store current state. Will be preserved when cloning.
+		$input.attr( 'data-current', state );
 
 		$group.toggleClass( 'rwmb-group-collapsed', 'collapsed' === state )
 		      .find( '.rwmb-group-toggle-handle' ).first().attr( 'aria-expanded', 'collapsed' !== state );
@@ -57,7 +63,8 @@
 		function processField( fieldId, separator ) {
 			separator = separator || '';
 
-			var $field = $group.find( ':input[name*="[' + fieldId + ']"]' ),
+			var selectors = 'input[name*="[' + fieldId + ']"], textarea[name*="[' + fieldId + ']"], select[name*="[' + fieldId + ']"], button[name*="[' + fieldId + ']"]',
+				$field = $group.find( selectors ),
 				fieldValue = $field.val();
 
 			if ( $field.is( 'select' ) ) {
@@ -115,15 +122,21 @@
 			}
 
 			$( this ).children( '.rwmb-input' ).each( function () {
+				var $input = $( this );
+
 				// Update group title.
-				$( this ).children( '.rwmb-group-clone' ).each( function ( index, clone ) {
+				$input.children( '.rwmb-group-clone' ).each( function ( index, clone ) {
 					group.toggle.updateTitle( index + 1, clone );
 					group.toggle.updateState( $( clone ) );
 				} );
 
 				// Drag and drop clones via group title.
-				if ( $( this ).data( 'ui-sortable' ) ) {
-					$( this ).sortable( 'option', 'handle', '.rwmb-clone-icon + .rwmb-group-title' );
+				if ( $input.data( 'ui-sortable' ) ) { // If sortable is initialized.
+					$input.sortable( 'option', 'handle', '.rwmb-clone-icon + .rwmb-group-title' );
+				} else { // If not.
+					$input.on( 'sortcreate', function () {
+						$input.sortable( 'option', 'handle', '.rwmb-clone-icon + .rwmb-group-title' );
+					} );
 				}
 			} );
 		} );
@@ -242,17 +255,21 @@
 			} );
 
 		// Update [group index] for inputs
-		$group.find( ':input[class|="rwmb"]' ).each( function () {
+		$group.find( inputSelectors ).each( function () {
 			group.clone.updateGroupIndex.call( this );
+		} );
+
+		// Preserve the state (via [data-current]).
+		$group.find( '[name*="[_state]"]' ).each( function() {
+			$( this ).val( $( this ).data( 'current' ) );
 		} );
 
 		// Update group title for the new clone and set it expanded by default.
 		if ( $group.closest( '.rwmb-group-collapsible' ).length ) {
 			group.toggle.updateTitle( index + 1, $group );
-			group.toggle.updateState( $group, 'expanded' );
+			group.toggle.updateState( $group );
 		}
-		// Sub groups: set expanded by default and reset titles.
-		$group.find( '[name*="[_state]"]' ).val( 'expanded' );
+		// Sub groups: reset titles, but preserve the state.
 		group.toggle.initTitle( $group );
 
 		$wrapper.trigger( 'clone_completed' );
@@ -266,8 +283,11 @@
 		$wrapper.on( 'click', '.rwmb-group-title, .rwmb-group-toggle-handle', group.toggle.handle );
 		group.toggle.initTitle( $wrapper );
 
+		// Refresh maps to make them visible.
+		$( window ).trigger( 'rwmb_map_refresh' );
+
 		$wrapper.on( 'clone_instance', '.rwmb-clone', group.clone.processGroup );
-		$wrapper.on( 'update_index', ':input[class|="rwmb"]', group.clone.replaceId );
-		$wrapper.on( 'clone', ':input[class|="rwmb"]', group.clone.updateIndex );
+		$wrapper.on( 'update_index', inputSelectors, group.clone.replaceId );
+		$wrapper.on( 'clone', inputSelectors, group.clone.updateIndex );
 	} );
-} )( jQuery, _ );
+} )( jQuery, _, document );

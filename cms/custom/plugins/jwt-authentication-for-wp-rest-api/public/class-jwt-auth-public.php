@@ -88,6 +88,9 @@ class Jwt_Auth_Public
      */
     public function add_cors_support()
     {
+        
+        header('Access-Control-Allow-Headers: Access-Control-Allow-Headers, Content-Type, Authorization');
+        
         $enable_cors = defined('JWT_AUTH_CORS_ENABLE') ? JWT_AUTH_CORS_ENABLE : false;
         if ($enable_cors) {
             $headers = apply_filters('jwt_auth_cors_allow_headers', 'Access-Control-Allow-Headers, Content-Type, Authorization');

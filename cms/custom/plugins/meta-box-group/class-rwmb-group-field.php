@@ -79,15 +79,9 @@ class RWMB_Group_Field extends RWMB_Field {
 		// Add group value to the queue.
 		array_unshift( self::$meta_queue, $meta );
 
-		// Add clone index to make sure each child field has an unique ID.
-		$clone_index = '';
-		if ( $field['clone'] && preg_match( '|_\d+$|', $field['id'], $match ) ) {
-			$clone_index = $match[0];
-		}
-
 		foreach ( $field['fields'] as $child_field ) {
 			$child_field['field_name']       = self::child_field_name( $field['field_name'], $child_field['field_name'] );
-			$child_field['attributes']['id'] = self::child_field_id( $field, $child_field, $clone_index );
+			$child_field['attributes']['id'] = self::child_field_id( $field, $child_field );
 
 			self::call( 'show', $child_field, RWMB_Group::$saved );
 		}
@@ -164,6 +158,9 @@ class RWMB_Group_Field extends RWMB_Field {
 		 * @see RWMB_Field::meta()
 		 */
 		if ( $child_field['clone'] || $child_field['multiple'] ) {
+			if ( ! is_array( $meta ) && ! empty( $meta ) ) {
+				$meta = array( $meta );
+			}
 			if ( empty( $meta ) || ! is_array( $meta ) ) {
 				/**
 				 * Note: if field is clonable, $meta must be an array with values.
@@ -236,10 +233,46 @@ class RWMB_Group_Field extends RWMB_Field {
 	 * @return array
 	 */
 	public static function value( $new, $old, $post_id, $field ) {
+		if ( empty( $field['fields'] ) || ! is_array( $field['fields'] ) ) {
+			return array();
+		}
+
+		$child_fields = $field['fields'];
+		if ( ! $new || ! is_array( $new ) ) {
+			$new = array();
+		}
+		foreach ( $child_fields as $child_field ) {
+			if ( ! in_array( $child_field['type'], array( 'file', 'image' ) ) ) {
+				continue;
+			}
+
+			$value = RWMB_File_Field::value( '', '', $post_id, $child_field );
+			$new[ $child_field['id'] ] = $value;
+		}
+
+		return self::sanitize( $new, $old, $post_id, $field );
+	}
+
+	/**
+	 * Sanitize value of meta before saving into database.
+	 *
+	 * @param mixed $new     The submitted meta value.
+	 * @param mixed $old     The existing meta value.
+	 * @param int   $post_id The post ID.
+	 * @param array $field   The field parameters.
+	 *
+	 * @return array
+	 */
+	public static function sanitize( $new, $old, $post_id, $field ) {
 		$sanitized = array();
+
+		if ( ! $new || ! is_array( $new ) ) {
+			return $sanitized;
+		}
+
 		foreach ( $new as $key => $value ) {
 			if ( is_array( $value ) && ! empty( $value ) ) {
-				$value = self::value( $value, '', '', array() );
+				$value = self::sanitize( $value, '', '', array() );
 			}
 			if ( '' !== $value && array() !== $value ) {
 				if ( is_int( $key ) ) {
@@ -277,10 +310,13 @@ class RWMB_Group_Field extends RWMB_Field {
 		// Add a new hidden field to save the collapse/expand state.
 		if ( $field['save_state'] ) {
 			$field['fields'][] = RWMB_Input_Field::normalize( array(
-				'type'  => 'hidden',
-				'id'    => '_state',
-				'std'   => $field['default_state'],
-				'class' => 'rwmb-group-state',
+				'type'       => 'hidden',
+				'id'         => '_state',
+				'std'        => $field['default_state'],
+				'class'      => 'rwmb-group-state',
+				'attributes' => array(
+					'data-current' => $field['default_state'],
+				),
 			) );
 		}
 		if ( ! $field['clone'] ) {
@@ -311,14 +347,13 @@ class RWMB_Group_Field extends RWMB_Field {
 	 *
 	 * @param array $parent      Parent field.
 	 * @param array $child       Child field.
-	 * @param int   $clone_index Parent clone index.
 	 *
 	 * @return string
 	 */
-	protected static function child_field_id( $parent, $child, $clone_index ) {
+	protected static function child_field_id( $parent, $child ) {
 		$parent = isset( $parent['attributes']['id'] ) ? $parent['attributes']['id'] : $parent['id'];
 		$child  = isset( $child['attributes']['id'] ) ? $child['attributes']['id'] : $child['id'];
 
-		return $clone_index ? "{$parent}{$clone_index}_{$child}" : "{$parent}_{$child}";
+		return "{$parent}_{$child}";
 	}
 }

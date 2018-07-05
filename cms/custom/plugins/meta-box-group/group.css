@@ -142,7 +142,7 @@
 .rwmb-group-collapsed.rwmb-group-non-cloneable > .rwmb-label,
 .rwmb-group-collapsed.rwmb-group-non-cloneable > .rwmb-input > .rwmb-field,
 .rwmb-group-collapsed.rwmb-group-non-cloneable > .rwmb-input > .rwmb-row {
-	display: none;
+	display: none !important; /* Force to hidden to work with Conditional Logic */
 }
 
 .rwmb-group-collapsible > .rwmb-input > .rwmb-group-collapsed {
@@ -151,5 +151,5 @@
 
 .rwmb-group-collapsed > .rwmb-field,
 .rwmb-group-collapsed > .rwmb-row.rwmb-row {
-	display: none;
+	display: none !important; /* Force to hidden to work with Conditional Logic */
 }

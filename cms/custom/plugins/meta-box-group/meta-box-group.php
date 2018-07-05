@@ -3,7 +3,7 @@
  * Plugin Name: Meta Box Group
  * Plugin URI: https://metabox.io/plugins/meta-box-group/
  * Description: Add-on for meta box plugin, allows you to add field type 'group' which put child fields into 1 group which are displayed/accessed easier and can be cloneable.
- * Version: 1.2.8
+ * Version: 1.2.13
  * Author: MetaBox.io
  * Author URI: https://metabox.io
  * License: GPL2+
@@ -66,6 +66,6 @@ if ( ! class_exists( 'RWMB_Group' ) ) {
 		}
 	}
 
-	$group = new RWMB_Group;
+	$group = new RWMB_Group();
 	$group->init();
 } // End if().

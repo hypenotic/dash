@@ -1,3 +1,5 @@
+
+
 //Import
 import Vue from 'vue'
 import App from './App.vue'
@@ -7,6 +9,8 @@ import Buefy from 'buefy'
 import 'buefy/lib/buefy.css'
 import Footer from './components/Shared/Footer.vue'
 import { store } from './store/store.js'
+import VueResource from 'vue-resource';
+
 
 // Register global components 
 Vue.component('hype-footer', Footer) // Register globally
@@ -14,6 +18,7 @@ Vue.component('hype-footer', Footer) // Register globally
 // Use
 Vue.use(Buefy);
 Vue.use(VueRouter);
+Vue.use(VueResource);
 
 const router = new VueRouter({
 	routes, // Have to pass an object where we setup the router. ES6 syntax (routes:routes)
